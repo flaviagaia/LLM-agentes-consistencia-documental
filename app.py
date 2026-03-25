@@ -26,6 +26,8 @@ def _ensure_artifacts(review_mode: str) -> tuple[dict, dict, pd.DataFrame, pd.Da
         }
         if not expected_summary_keys.issubset(summary):
             raise ValueError("summary incompleto")
+        if summary.get("review_mode") != review_mode:
+            raise ValueError("summary em modo diferente do selecionado")
         if "retrieval" not in metrics or "consistency_detection" not in metrics:
             raise ValueError("metrics incompleto")
         if clauses.empty or "clause_id" not in clauses.columns:
