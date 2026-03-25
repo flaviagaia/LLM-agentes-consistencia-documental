@@ -10,6 +10,33 @@ from src.config import CLAUSES_PATH, FINDINGS_PATH, SUMMARY_PATH
 from src.pipeline import run_pipeline
 
 
+def _ensure_artifacts(review_mode: str) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
+    try:
+        summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+        clauses = pd.read_csv(CLAUSES_PATH)
+        findings = pd.read_csv(FINDINGS_PATH)
+        expected_summary_keys = {
+            "documents",
+            "clauses",
+            "similar_pairs",
+            "findings",
+            "reviewed_findings",
+            "review_mode",
+        }
+        if not expected_summary_keys.issubset(summary):
+            raise ValueError("summary incompleto")
+        if clauses.empty or "clause_id" not in clauses.columns:
+            raise ValueError("clauses invalido")
+        if "issue_type" not in findings.columns:
+            raise ValueError("findings invalido")
+        return summary, clauses, findings
+    except Exception:
+        summary = run_pipeline(use_llm=(review_mode == "llm"))
+        clauses = pd.read_csv(CLAUSES_PATH)
+        findings = pd.read_csv(FINDINGS_PATH)
+        return summary, clauses, findings
+
+
 st.set_page_config(page_title="LLM Agentes de Consistência Documental", layout="wide")
 
 st.markdown(
@@ -42,12 +69,7 @@ mode = st.radio("Modo de revisão", options=["fallback", "llm"], horizontal=True
 if st.button("Atualizar análise"):
     run_pipeline(use_llm=(mode == "llm"))
 
-if not SUMMARY_PATH.exists() or not CLAUSES_PATH.exists() or not FINDINGS_PATH.exists():
-    run_pipeline(use_llm=False)
-
-summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
-clauses = pd.read_csv(CLAUSES_PATH)
-findings = pd.read_csv(FINDINGS_PATH)
+summary, clauses, findings = _ensure_artifacts(mode)
 
 cols = st.columns(5)
 cols[0].metric("Documentos", summary["documents"])

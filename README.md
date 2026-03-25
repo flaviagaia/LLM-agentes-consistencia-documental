@@ -68,6 +68,8 @@ python3 main.py
 streamlit run app.py
 ```
 
+Se você tentar rodar fora do ambiente virtual e faltar dependência, o `main.py` agora retorna uma mensagem explícita orientando a ativação do `.venv`.
+
 ---
 
 ## EN
