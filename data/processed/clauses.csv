@@ -1,0 +1,17 @@
+document_id,document_name,document_type,clause_id,clause_number,clause_text
+DOC-001,Mechanical Execution Guideline,guideline,DOC-001-1,1,The contractor shall deliver the 3D mechanical model within 10 calendar days after kickoff.
+DOC-001,Mechanical Execution Guideline,guideline,DOC-001-2,2,Quality verification shall be performed by the contractor quality lead before issue.
+DOC-001,Mechanical Execution Guideline,guideline,DOC-001-3,3,Measurement for progress shall be based on isometric sheets approved by engineering.
+DOC-001,Mechanical Execution Guideline,guideline,DOC-001-4,4,The applicable technical standard is ENG-VAL-01.
+DOC-002,Mechanical Annex for Field Delivery,annex,DOC-002-1,1,The contractor shall deliver the 3D mechanical model within 15 calendar days after kickoff.
+DOC-002,Mechanical Annex for Field Delivery,annex,DOC-002-2,2,Quality verification shall be performed by the client inspection team before issue.
+DOC-002,Mechanical Annex for Field Delivery,annex,DOC-002-3,3,Measurement for progress shall be based on bill of quantities signed by planning.
+DOC-002,Mechanical Annex for Field Delivery,annex,DOC-002-4,4,The applicable technical standard is ENG-VAL-02.
+DOC-003,Instrumentation Design Memo,memo,DOC-003-1,1,The instrumentation panel list shall be delivered within 12 calendar days after kickoff.
+DOC-003,Instrumentation Design Memo,memo,DOC-003-2,2,Quality verification shall be performed by the engineering coordinator before issue.
+DOC-003,Instrumentation Design Memo,memo,DOC-003-3,3,Measurement for progress shall be based on approved panel list packages.
+DOC-003,Instrumentation Design Memo,memo,DOC-003-4,4,The applicable technical standard is ENG-INS-05.
+DOC-004,Instrumentation Construction Appendix,appendix,DOC-004-1,1,The instrumentation panel list shall be delivered within 12 calendar days after kickoff.
+DOC-004,Instrumentation Construction Appendix,appendix,DOC-004-2,2,Quality verification shall be performed by the engineering coordinator before issue.
+DOC-004,Instrumentation Construction Appendix,appendix,DOC-004-3,3,Measurement for progress shall be based on approved panel list packages.
+DOC-004,Instrumentation Construction Appendix,appendix,DOC-004-4,4,The applicable technical standard is ENG-INS-07.

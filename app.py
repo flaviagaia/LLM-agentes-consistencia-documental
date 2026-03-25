@@ -1,0 +1,72 @@
+from __future__ import annotations
+
+import json
+
+import pandas as pd
+import plotly.express as px
+import streamlit as st
+
+from src.config import CLAUSES_PATH, FINDINGS_PATH, SUMMARY_PATH
+from src.pipeline import run_pipeline
+
+
+st.set_page_config(page_title="LLM Agentes de Consistência Documental", layout="wide")
+
+st.markdown(
+    """
+    <style>
+    .stApp { background: #07111f; color: #e5eef9; }
+    .hero {
+        background: rgba(10, 18, 32, 0.88);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        border-radius: 22px;
+        padding: 1.2rem 1.3rem;
+    }
+    .hero h1, .hero p { color: #e5eef9; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <div class="hero">
+        <h1>LLM Agentes para Consistência Documental</h1>
+        <p>Pipeline com agentes de recuperação, detecção de inconsistências e revisão final assistida por LLM para documentos técnicos sintéticos.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+mode = st.radio("Modo de revisão", options=["fallback", "llm"], horizontal=True, format_func=lambda x: "LLM" if x == "llm" else "Fallback")
+if st.button("Atualizar análise"):
+    run_pipeline(use_llm=(mode == "llm"))
+
+if not SUMMARY_PATH.exists() or not CLAUSES_PATH.exists() or not FINDINGS_PATH.exists():
+    run_pipeline(use_llm=False)
+
+summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+clauses = pd.read_csv(CLAUSES_PATH)
+findings = pd.read_csv(FINDINGS_PATH)
+
+cols = st.columns(5)
+cols[0].metric("Documentos", summary["documents"])
+cols[1].metric("Cláusulas", summary["clauses"])
+cols[2].metric("Pares similares", summary["similar_pairs"])
+cols[3].metric("Inconsistências", summary["findings"])
+cols[4].metric("Modo", summary["review_mode"])
+
+tab_docs, tab_findings = st.tabs(["Documentos", "Revisão dos Agentes"])
+
+with tab_docs:
+    st.dataframe(clauses, use_container_width=True, hide_index=True)
+
+with tab_findings:
+    if not findings.empty:
+        st.plotly_chart(
+            px.bar(findings["issue_type"].value_counts().rename_axis("issue_type").reset_index(name="count"), x="issue_type", y="count", color="issue_type", title="Tipos de inconsistência"),
+            use_container_width=True,
+        )
+        st.dataframe(findings, use_container_width=True, hide_index=True)
+    else:
+        st.info("Nenhuma inconsistência foi encontrada.")

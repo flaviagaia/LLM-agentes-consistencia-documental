@@ -1,0 +1,8 @@
+{
+  "documents": 4,
+  "clauses": 16,
+  "similar_pairs": 19,
+  "findings": 16,
+  "reviewed_findings": 16,
+  "review_mode": "fallback"
+}
