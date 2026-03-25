@@ -97,6 +97,10 @@ Leitura técnica:
 - mas ainda gera muitos pares extras, o que derruba a `precision`
 - isso é útil para portfólio porque mostra um comportamento realista de sistemas agentic: boa cobertura, mas necessidade de refinar ranking, thresholds e validação final
 
+### Interface
+
+![Painel Streamlit](assets/streamlit_dashboard.jpg)
+
 ### Técnicas e bibliotecas
 
 - `pandas`
