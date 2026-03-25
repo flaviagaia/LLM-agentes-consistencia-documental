@@ -6,13 +6,14 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.config import CLAUSES_PATH, FINDINGS_PATH, SUMMARY_PATH
+from src.config import CLAUSES_PATH, FINDINGS_PATH, METRICS_PATH, SUMMARY_PATH
 from src.pipeline import run_pipeline
 
 
-def _ensure_artifacts(review_mode: str) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
+def _ensure_artifacts(review_mode: str) -> tuple[dict, dict, pd.DataFrame, pd.DataFrame]:
     try:
         summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+        metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
         clauses = pd.read_csv(CLAUSES_PATH)
         findings = pd.read_csv(FINDINGS_PATH)
         expected_summary_keys = {
@@ -25,16 +26,19 @@ def _ensure_artifacts(review_mode: str) -> tuple[dict, pd.DataFrame, pd.DataFram
         }
         if not expected_summary_keys.issubset(summary):
             raise ValueError("summary incompleto")
+        if "retrieval" not in metrics or "consistency_detection" not in metrics:
+            raise ValueError("metrics incompleto")
         if clauses.empty or "clause_id" not in clauses.columns:
             raise ValueError("clauses invalido")
         if "issue_type" not in findings.columns:
             raise ValueError("findings invalido")
-        return summary, clauses, findings
+        return summary, metrics, clauses, findings
     except Exception:
         summary = run_pipeline(use_llm=(review_mode == "llm"))
+        metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
         clauses = pd.read_csv(CLAUSES_PATH)
         findings = pd.read_csv(FINDINGS_PATH)
-        return summary, clauses, findings
+        return summary, metrics, clauses, findings
 
 
 st.set_page_config(page_title="LLM Agentes de Consistência Documental", layout="wide")
@@ -69,16 +73,17 @@ mode = st.radio("Modo de revisão", options=["fallback", "llm"], horizontal=True
 if st.button("Atualizar análise"):
     run_pipeline(use_llm=(mode == "llm"))
 
-summary, clauses, findings = _ensure_artifacts(mode)
+summary, metrics, clauses, findings = _ensure_artifacts(mode)
 
-cols = st.columns(5)
+cols = st.columns(6)
 cols[0].metric("Documentos", summary["documents"])
 cols[1].metric("Cláusulas", summary["clauses"])
 cols[2].metric("Pares similares", summary["similar_pairs"])
 cols[3].metric("Inconsistências", summary["findings"])
 cols[4].metric("Modo", summary["review_mode"])
+cols[5].metric("F1 Detecção", f"{metrics['consistency_detection']['f1']:.2f}")
 
-tab_docs, tab_findings = st.tabs(["Documentos", "Revisão dos Agentes"])
+tab_docs, tab_findings, tab_metrics = st.tabs(["Documentos", "Revisão dos Agentes", "Métricas"])
 
 with tab_docs:
     st.dataframe(clauses, use_container_width=True, hide_index=True)
@@ -92,3 +97,15 @@ with tab_findings:
         st.dataframe(findings, use_container_width=True, hide_index=True)
     else:
         st.info("Nenhuma inconsistência foi encontrada.")
+
+with tab_metrics:
+    metrics_df = pd.DataFrame(
+        [
+            {"stage": "retrieval", **metrics["retrieval"]},
+            {"stage": "consistency_detection", **metrics["consistency_detection"]},
+        ]
+    )
+    st.dataframe(metrics_df, use_container_width=True, hide_index=True)
+    st.caption(
+        "As métricas usam um ground truth controlado com pares esperados de cláusulas comparáveis e inconsistências conhecidas."
+    )

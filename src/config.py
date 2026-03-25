@@ -9,9 +9,11 @@ ARTIFACTS_DIR = BASE_DIR / "artifacts"
 ASSETS_DIR = BASE_DIR / "assets"
 
 DOCUMENTS_PATH = RAW_DIR / "synthetic_documents.csv"
+GROUND_TRUTH_PATH = RAW_DIR / "ground_truth.csv"
 CLAUSES_PATH = PROCESSED_DIR / "clauses.csv"
 SIMILARITY_PATH = PROCESSED_DIR / "similar_pairs.csv"
 FINDINGS_PATH = PROCESSED_DIR / "findings.csv"
 SUMMARY_PATH = PROCESSED_DIR / "summary.json"
+METRICS_PATH = PROCESSED_DIR / "metrics.json"
 
 BASE_MODEL_NAME = "google/flan-t5-small"

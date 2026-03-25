@@ -4,7 +4,7 @@ import json
 
 import pandas as pd
 
-from .config import DOCUMENTS_PATH, RAW_DIR
+from .config import DOCUMENTS_PATH, GROUND_TRUTH_PATH, RAW_DIR
 
 
 DOCUMENTS = [
@@ -54,9 +54,61 @@ DOCUMENTS = [
     },
 ]
 
+GROUND_TRUTH = [
+    {
+        "left_clause_id": "DOC-001-1",
+        "right_clause_id": "DOC-002-1",
+        "issue_type": "deadline_days",
+        "expected_inconsistency": True,
+    },
+    {
+        "left_clause_id": "DOC-001-2",
+        "right_clause_id": "DOC-002-2",
+        "issue_type": "responsibility",
+        "expected_inconsistency": True,
+    },
+    {
+        "left_clause_id": "DOC-001-3",
+        "right_clause_id": "DOC-002-3",
+        "issue_type": "measurement_basis",
+        "expected_inconsistency": True,
+    },
+    {
+        "left_clause_id": "DOC-001-4",
+        "right_clause_id": "DOC-002-4",
+        "issue_type": "technical_standard",
+        "expected_inconsistency": True,
+    },
+    {
+        "left_clause_id": "DOC-003-1",
+        "right_clause_id": "DOC-004-1",
+        "issue_type": "deadline_days",
+        "expected_inconsistency": False,
+    },
+    {
+        "left_clause_id": "DOC-003-2",
+        "right_clause_id": "DOC-004-2",
+        "issue_type": "responsibility",
+        "expected_inconsistency": False,
+    },
+    {
+        "left_clause_id": "DOC-003-3",
+        "right_clause_id": "DOC-004-3",
+        "issue_type": "measurement_basis",
+        "expected_inconsistency": False,
+    },
+    {
+        "left_clause_id": "DOC-003-4",
+        "right_clause_id": "DOC-004-4",
+        "issue_type": "technical_standard",
+        "expected_inconsistency": True,
+    },
+]
+
 
 def generate_documents() -> pd.DataFrame:
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame(DOCUMENTS)
     df.to_csv(DOCUMENTS_PATH, index=False)
+    pd.DataFrame(GROUND_TRUTH).to_csv(GROUND_TRUTH_PATH, index=False)
     return df

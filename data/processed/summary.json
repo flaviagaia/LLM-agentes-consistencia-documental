@@ -4,5 +4,7 @@
   "similar_pairs": 19,
   "findings": 16,
   "reviewed_findings": 16,
-  "review_mode": "fallback"
+  "review_mode": "fallback",
+  "retrieval_f1": 0.5185,
+  "consistency_detection_f1": 0.381
 }

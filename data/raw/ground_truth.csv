@@ -1,0 +1,9 @@
+left_clause_id,right_clause_id,issue_type,expected_inconsistency
+DOC-001-1,DOC-002-1,deadline_days,True
+DOC-001-2,DOC-002-2,responsibility,True
+DOC-001-3,DOC-002-3,measurement_basis,True
+DOC-001-4,DOC-002-4,technical_standard,True
+DOC-003-1,DOC-004-1,deadline_days,False
+DOC-003-2,DOC-004-2,responsibility,False
+DOC-003-3,DOC-004-3,measurement_basis,False
+DOC-003-4,DOC-004-4,technical_standard,True
